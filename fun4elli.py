@@ -3,7 +3,7 @@
 ===========
 fun4elli.py
 ===========
-Copyright (c) 2016 Cristian Damian
+Copyright (c) 2017 Cristian Damian
 
 Created on Thu Jul 21 16:46:40 2016
 
@@ -64,7 +64,7 @@ http://www.geometrictools.com/Documentation/DistancePointEllipseEllipsoid.pdf
 
 The MIT License (MIT)
 
-Copyright (c) 2016 Cristian Damian
+Copyright (c) 2017 Cristian Damian
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
