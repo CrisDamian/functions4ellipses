@@ -35,16 +35,16 @@ tParam : (cx, cy, l, w, t)
         The parametric representation touple of the ellipse. It consists of
         the coefficients for the parametric representation of the ellipse.
         The parameters have the following meanings:
-        ``cx, cy`` are the coordinates ot the center of the ellipse,
-        ``l`` is the length of the major axis (the length) of the ellipse,
-        ``w`` is the length of the minor axis (the width) of the ellipse,
-        ``t`` is the tilt of the ellipse in radians.
+        `cx, cy` are the coordinates ot the center of the ellipse,
+        `l` is the length of the major axis (the length) of the ellipse,
+        `w` is the length of the minor axis (the width) of the ellipse,
+        `t` is the tilt of the ellipse in radians.
 
 tFociStr : (x1, y1, x2, y2, s)
         The foci and string representation touple of the ellipse.
         It constists of:
-        ``x1, y1, x2, y2`` the cartesian coordinates of the 2 foci of the ellipse,
-        ``s`` the length of the string used to draw the ellipse.
+        `x1, y1, x2, y2` the cartesian coordinates of the 2 foci of the ellipse,
+        `s` the length of the string used to draw the ellipse.
 
 
 References
@@ -89,8 +89,6 @@ SOFTWARE.
 import numpy as np
 from scipy import linalg
 from scipy import optimize
-if __name__ == "__main__":
-    import matplotlib.pyplot as plt
 
 
 def conic2Param(tConic):
@@ -113,10 +111,10 @@ def conic2Param(tConic):
         The parametric representation touple of the ellipse. It consists of
         the coefficients for the parametric representation of the ellipse.
         The parameters have the following meanings:
-        ``cx, cy`` are the coordinates of the center of the ellipse,
-        ``l`` is the length of the major axis of the ellipse,
-        ``w`` is the length of the minor axis of the ellipse,
-        ``t`` is the tilt of the ellipse in radians.
+        `cx, cy` are the coordinates of the center of the ellipse,
+        `l` is the length of the major axis of the ellipse,
+        `w` is the length of the minor axis of the ellipse,
+        `t` is the tilt of the ellipse in radians.
 
     Raises
     ------
@@ -153,6 +151,7 @@ def conic2Param(tConic):
 
     return (cx, cy, l, w, tau)
 
+
 def param2Conic(tParam):
     """
     Recieves the parametric representation tuple of an ellipse and returns
@@ -164,10 +163,10 @@ def param2Conic(tParam):
         The parametric representation touple of the ellipse. It consists of
         the coefficients for the parametric representation of the ellipse.
         The parameters have the following meanings:
-        ``cx, cy`` are the coordinates ot the center of the ellipse,
-        ``l`` is the length of the major axis of the ellipse,
-        ``w`` is the length of the minor axis of the ellipse,
-        ``t`` is the tilt of the ellipse in radians.
+        `cx, cy` are the coordinates ot the center of the ellipse,
+        `l` is the length of the major axis of the ellipse,
+        `w` is the length of the minor axis of the ellipse,
+        `t` is the tilt of the ellipse in radians.
 
     Returns
     -------
@@ -193,6 +192,7 @@ def param2Conic(tParam):
 
     return (A, B, C, D, E, F)
 
+
 def param2FociStr(tParam):
     """
     Recieves the parametric representation tuple of an ellipse and returns
@@ -204,18 +204,18 @@ def param2FociStr(tParam):
         The parametric representation touple of the ellipse. It consists of
         the coefficients for the parametric representation of the ellipse.
         The parameters have the following meanings:
-        ``cx, cy`` are the coordinates ot the center of the ellipse,
-        ``l`` is the length of the major axis of the ellipse,
-        ``w`` is the length of the minor axis of the ellipse,
-        ``t`` is the tilt of the ellipse in radians.
+        `cx, cy` are the coordinates ot the center of the ellipse,
+        `l` is the length of the major axis of the ellipse,
+        `w` is the length of the minor axis of the ellipse,
+        `t` is the tilt of the ellipse in radians.
 
     Returns
     -------
     tFociStr : (x1, y1, x2, y2, s)
         The foci and string representation touple of the ellipse.
         It constists of:
-        ``x1, y1, x2, y2`` the cartesian coordinates of the 2 foci of the ellipse,
-        ``s`` the length of the string used to draw the ellipse.
+        `x1, y1, x2, y2` the cartesian coordinates of the 2 foci of the ellipse,
+        `s` the length of the string used to draw the ellipse.
 
     """
     #Auxiliary variables
@@ -233,6 +233,7 @@ def param2FociStr(tParam):
 
     return (x1, y1, x2, y2, s)
 
+
 def fociStr2Param(tFociStr):
     """
     Recieves the foci and string representation touple of an ellipse and
@@ -243,8 +244,8 @@ def fociStr2Param(tFociStr):
     tFociStr : (x1, y1, x2, y2, s)
         The foci and string representation touple of the ellipse.
         It constists of:
-        ``x1, y1, x2, y2`` the cartesian coordinates of the 2 foci of the ellipse,
-        ``s`` the length of the string used to draw the ellipse.
+        `x1, y1, x2, y2` the cartesian coordinates of the 2 foci of the ellipse,
+        `s` the length of the string used to draw the ellipse.
 
     Returns
     -------
@@ -252,10 +253,10 @@ def fociStr2Param(tFociStr):
         The parametric representation touple of the ellipse. It consists of
         the coefficients for the parametric representation of the ellipse.
         The parameters have the following meanings:
-        ``cx, cy`` are the coordinates ot the center of the ellipse,
-        ``l`` is the length of the major axis of the ellipse,
-        ``w`` is the length of the minor axis of the ellipse,
-        ``t`` is the tilt of the ellipse in radians.
+        `cx, cy` are the coordinates ot the center of the ellipse,
+        `l` is the length of the major axis of the ellipse,
+        `w` is the length of the minor axis of the ellipse,
+        `t` is the tilt of the ellipse in radians.
 
     """
     # Auxiliary variables
@@ -269,6 +270,7 @@ def fociStr2Param(tFociStr):
     t = np.arctan2((y2-y1),(x2-x1))
 
     return (cx, cy, l, w, t)
+
 
 def getPoints(tParam, theta):
     """
@@ -288,7 +290,7 @@ def getPoints(tParam, theta):
     -------
 
     res : numpy.ndarray
-        A n*2  array with the Cartesian coordinates of the points.
+        A ``n*2``  array with the Cartesian coordinates of the points.
         Column 0 is has the X coordinates and column 1 has the Y coordinates.
 
     """
@@ -404,12 +406,12 @@ def distEllipsePoints(tParam, points, signed=False, getProjes  = False, tol=None
         coordinates.
 
     signed : boolean, optional
-        Default is ``False``. If ``True`` the sign of the distance will be
+        Default is `False`. If `True` the sign of the distance will be
         negative for the points that are inside the ellipse.
 
     getProjes : boolean, optional
-        Default is ``False``. If ``True`` the function retuns  the tuple
-        ``(dists, projes)``.
+        Default is `False`. If `True` the function retuns  the tuple
+        `(dists, projes)`.
 
     Returns
     -------
@@ -418,7 +420,7 @@ def distEllipsePoints(tParam, points, signed=False, getProjes  = False, tol=None
 
     projes : numpy.ndarray
         Returns the closest points to the imput points that lie on the ellipse.
-        The format is the same as for ``points``.
+        The format is the same as for `points`.
 
     References
     ----------
@@ -434,11 +436,11 @@ def distEllipsePoints(tParam, points, signed=False, getProjes  = False, tol=None
     points=np.array(points, dtype='float')
 
     if not (l > 0 and w > 0):
-        raise ValueError("Elements 2 and 3 of ``tParam`` must be pozitive.")
+        raise ValueError("Elements 2 and 3 of `tParam` must be pozitive.")
 
     if not (points.ndim == 2 and points.shape[1] == 2):
         raise ValueError(
-            "``points`` must be a 2d array and it must have 2 columns.")
+            "`points` must be a 2d array and it must have 2 columns.")
     if tol is None:
         tol = np.finfo(float).eps**.5
     # Center axes on ellipse
@@ -503,8 +505,8 @@ def relationPointsEllipse(points, tFociStr):
     tFociStr : (x1, y1, x2, y2, s)
         The foci and string representation touple of the ellipse.
         It constists of:
-        ``x1, y1, x2, y2`` the cartesian coordinates of the 2 foci of the ellipse,
-        ``s`` the length of the string used to draw the ellipse.
+        `x1, y1, x2, y2` the cartesian coordinates of the 2 foci of the ellipse,
+        `s` the length of the string used to draw the ellipse.
 
     Returns
     -------
@@ -519,47 +521,3 @@ def relationPointsEllipse(points, tFociStr):
     resid = ( np.sum((points-f1)**2, axis=1)**.5 +
               np.sum((points-f2)**2, axis=1)**.5 - s )
     return np.sign(resid)
-
-def _test_():
-    """
-    Basic test for some functions of the library.
-    """
-    # Makes points to be fitted to an ellipse
-    tParam = (10., 20., 10., 7., np.pi/6);
-    n = 60;
-    pts = getPoints(tParam,
-                    np.linspace(0, 2*np.pi, n, endpoint=False))
-    print("Number of data points", n)
-
-    # Tests fitting function
-    tConicHat = fitEllipseDirect(pts)
-    tParamHat = conic2Param(tConicHat)
-    print("Ellipse estimation errors:", np.subtract(tParamHat, tParam))
-    assert(np.allclose(tParam, tParamHat))
-
-    # Calculates distances from points to ellipse
-    pts = np.round(pts)
-    dists, projes = distEllipsePoints(tParam, pts, signed=True, getProjes=True)
-
-    # Checks if points with negative distances are inside the ellipse
-    rpe = relationPointsEllipse(pts, param2FociStr(tParam))
-    print("Sign matches :", np.all(np.sign(dists) == rpe) )
-    assert(np.all(np.sign(dists) == rpe))
-
-    # Gets the points to draw the ellipses
-    ellipse = getPoints(tParam, np.linspace(0, 2*np.pi, 60))
-    ellipseH = getPoints(tParamHat, np.linspace(0, 2*np.pi, 60))
-
-    # Visualizes results
-    plt.figure()
-    plt.plot(pts[:, 0], pts[:, 1], '.g')
-    plt.plot(ellipse[:, 0], ellipse[:, 1], 'g')
-    plt.plot(ellipseH[:, 0], ellipseH[:, 1], 'b')
-    for (x0, x1), (y0, y1) in zip(pts, projes):
-        plt.plot([x0, y0], [x1, y1], 'g')
-    plt.axis('equal')
-    plt.show()
-
-
-if __name__ == "__main__":
-    _test_()
