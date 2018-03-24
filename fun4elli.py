@@ -13,7 +13,6 @@ includes conversions of ellipse parameters, fitting and finding distances.
 Dependencies
 ============
 Numpy and Scipy packages.
-If run as a script uses the Matplotplib package too.
 
 Representations of ellipses
 ===========================
