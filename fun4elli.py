@@ -3,7 +3,7 @@
 ===========
 fun4elli.py
 ===========
-Copyright (c) 2017 Cristian Damian
+Copyright (c) 2016 Cristian Damian
 
 Created on Thu Jul 21 16:46:40 2016
 
@@ -31,19 +31,19 @@ tConic : (A, B, C, D, E F)
 
              A*x**2+B*x*y+C*y**2+D*x+E*y+F==0
 
-tParam : (cx, cy, a, b, teta)
+tParam : (cx, cy, l, w, t)
         The parametric representation touple of the ellipse. It consists of
         the coefficients for the parametric representation of the ellipse.
         The parameters have the following meanings:
-        ``cx, cy`` are the coordinates ot the center of the ellipse, 
-        ``a`` is the length of the major axis of the ellipse, 
-        ``b`` is the length of the minor axis of the ellipse, 
-        ``tau`` is the tilt of the ellipse in radians.
+        ``cx, cy`` are the coordinates ot the center of the ellipse,
+        ``l`` is the length of the major axis (the length) of the ellipse,
+        ``w`` is the length of the minor axis (the width) of the ellipse,
+        ``t`` is the tilt of the ellipse in radians.
 
 tFociStr : (x1, y1, x2, y2, s)
         The foci and string representation touple of the ellipse.
         It constists of:
-        ``x1, y1, x2, y2`` the cartesian coordinates of the 2 foci of the ellipse, 
+        ``x1, y1, x2, y2`` the cartesian coordinates of the 2 foci of the ellipse,
         ``s`` the length of the string used to draw the ellipse.
 
 
@@ -64,7 +64,7 @@ http://www.geometrictools.com/Documentation/DistancePointEllipseEllipsoid.pdf
 
 The MIT License (MIT)
 
-Copyright (c) 2017 Cristian Damian
+Copyright (c) 2016 Cristian Damian
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -109,14 +109,14 @@ def conic2Param(tConic):
 
     Returns
     -------
-    tParam : (cx, cy, a, b, teta)
+    tParam : (cx, cy, l, w, t)
         The parametric representation touple of the ellipse. It consists of
         the coefficients for the parametric representation of the ellipse.
         The parameters have the following meanings:
-        ``cx, cy`` are the coordinates ot the center of the ellipse, 
-        ``a`` is the length of the major axis of the ellipse, 
-        ``b`` is the length of the minor axis of the ellipse, 
-        ``tau`` is the tilt of the ellipse in radians.
+        ``cx, cy`` are the coordinates of the center of the ellipse,
+        ``l`` is the length of the major axis of the ellipse,
+        ``w`` is the length of the minor axis of the ellipse,
+        ``t`` is the tilt of the ellipse in radians.
 
     Raises
     ------
@@ -125,29 +125,33 @@ def conic2Param(tConic):
         eigenvalue computation done with the scipy library.
 
     """
+
     # Auxiliary variables
     A, B, C, D, E, F = tConic
 
-    M0 = np.matrix([[F, D/2, E/2], 
-                    [D/2, A, B/2], 
+    M0 = np.matrix([[F, D/2, E/2],
+                    [D/2, A, B/2],
                     [E/2, B/2, C]])
-    M = np.matrix([[A, B/2], 
+    M = np.matrix([[A, B/2],
                    [ B/2, C]]);
+
     detM = np.linalg.det(M)
     detM0 = np.linalg.det(M0)
 
+    # Eigenvalue problem
     eigval, eigvec = linalg.eig(M)
     if np.abs(eigval[0]-A)>np.abs(eigval[0]-C):
         eigval = np.flipud(eigval)
+        eigvec = np.fliplr(eigvec)
 
-    # parameters
+    # Parameters
     cx = (B*E-2*C*D)/(4*A*C-B*B)
     cy = (B*D-2*A*E)/(4*A*C-B*B)
-    a = np.sqrt(abs(np.real(-detM0 / (detM*eigval[0]))))
-    b = np.sqrt(abs(np.real(-detM0 / (detM*eigval[1]))))
+    l = np.sqrt(abs(np.real(-detM0 / (detM*eigval[0]))))
+    w = np.sqrt(abs(np.real(-detM0 / (detM*eigval[1]))))
     tau = np.arctan(B/(A-C))/2
 
-    return (cx, cy, a, b, tau)
+    return (cx, cy, l, w, tau)
 
 def param2Conic(tParam):
     """
@@ -156,14 +160,14 @@ def param2Conic(tParam):
 
     Parameters
     ----------
-    tParam : (cx, cy, a, b, teta)
+    tParam : (cx, cy, l, w, t)
         The parametric representation touple of the ellipse. It consists of
         the coefficients for the parametric representation of the ellipse.
         The parameters have the following meanings:
-        ``cx, cy`` are the coordinates ot the center of the ellipse, 
-        ``a`` is the length of the major axis of the ellipse, 
-        ``b`` is the length of the minor axis of the ellipse, 
-        ``tau`` is the tilt of the ellipse in radians.
+        ``cx, cy`` are the coordinates ot the center of the ellipse,
+        ``l`` is the length of the major axis of the ellipse,
+        ``w`` is the length of the minor axis of the ellipse,
+        ``t`` is the tilt of the ellipse in radians.
 
     Returns
     -------
@@ -175,17 +179,17 @@ def param2Conic(tParam):
              A*x**2+B*x*y+C*y**2+D*x+E*y+F==0
     """
     #Auxiliary vaiables
-    cx, cy, a, b, tau = tParam
+    cx, cy, l, w, tau = tParam
     s=np.sin(tau)
     c=np.cos(tau)
 
     # Conic parameters
-    A = (b*c)**2+(a*s)**2
-    B = 2*c*s*(a**2-b**2)
-    C = (b*s)**2+(a*c)**2
+    A = (w*c)**2+(l*s)**2
+    B = 2*c*s*(l**2-w**2)
+    C = (w*s)**2+(l*c)**2
     D = -2*A*cx - cy*B
     E = -2*C*cy - cx**B
-    F = -(a*b)**2 + A*cx**2 + B*cx*cy + C*cy**2
+    F = -(l*w)**2 + A*cx**2 + B*cx*cy + C*cy**2
 
     return (A, B, C, D, E, F)
 
@@ -196,36 +200,36 @@ def param2FociStr(tParam):
 
     Parameters
     ----------
-    tParam : (cx, cy, a, b, teta)
+    tParam : (cx, cy, l, w, t)
         The parametric representation touple of the ellipse. It consists of
         the coefficients for the parametric representation of the ellipse.
         The parameters have the following meanings:
-        ``cx, cy`` are the coordinates ot the center of the ellipse, 
-        ``a`` is the length of the major axis of the ellipse, 
-        ``b`` is the length of the minor axis of the ellipse, 
-        ``tau`` is the tilt of the ellipse in radians.
+        ``cx, cy`` are the coordinates ot the center of the ellipse,
+        ``l`` is the length of the major axis of the ellipse,
+        ``w`` is the length of the minor axis of the ellipse,
+        ``t`` is the tilt of the ellipse in radians.
 
     Returns
     -------
     tFociStr : (x1, y1, x2, y2, s)
         The foci and string representation touple of the ellipse.
         It constists of:
-        ``x1, y1, x2, y2`` the cartesian coordinates of the 2 foci of the ellipse, 
+        ``x1, y1, x2, y2`` the cartesian coordinates of the 2 foci of the ellipse,
         ``s`` the length of the string used to draw the ellipse.
 
     """
     #Auxiliary variables
-    cx, cy, a, b, tau = tParam
+    cx, cy, l, w, tau = tParam
     sinT=np.sin(tau)
     cosT=np.cos(tau)
-    c = (a**2-b**2)**.5
+    c = (l**2-w**2)**.5
 
     # Foci&String parameters
     x1 = cx - cosT*c
     y1 = cy - sinT*c
     x2 = cx + cosT*c
     y2 = cy + sinT*c
-    s = 2*a
+    s = 2*l
 
     return (x1, y1, x2, y2, s)
 
@@ -239,34 +243,34 @@ def fociStr2Param(tFociStr):
     tFociStr : (x1, y1, x2, y2, s)
         The foci and string representation touple of the ellipse.
         It constists of:
-        ``x1, y1, x2, y2`` the cartesian coordinates of the 2 foci of the ellipse, 
+        ``x1, y1, x2, y2`` the cartesian coordinates of the 2 foci of the ellipse,
         ``s`` the length of the string used to draw the ellipse.
 
     Returns
     -------
-    tParam : (cx, cy, a, b, teta)
+    tParam : (cx, cy, l, w, t)
         The parametric representation touple of the ellipse. It consists of
         the coefficients for the parametric representation of the ellipse.
         The parameters have the following meanings:
-        ``cx, cy`` are the coordinates ot the center of the ellipse, 
-        ``a`` is the length of the major axis of the ellipse, 
-        ``b`` is the length of the minor axis of the ellipse, 
-        ``tau`` is the tilt of the ellipse in radians.
+        ``cx, cy`` are the coordinates ot the center of the ellipse,
+        ``l`` is the length of the major axis of the ellipse,
+        ``w`` is the length of the minor axis of the ellipse,
+        ``t`` is the tilt of the ellipse in radians.
 
     """
     # Auxiliary variables
     x1, y1, x2, y2, s = tFociStr
 
-    # Foci&string parameters
+    # Parameters
     cx = (x1+x2)/2
     cy = (y1+y2)/2
-    a = s/2
-    b = (s**2 -((x1-y1)**2+(y1-y2)**2))**.5/2
-    tau = np.arctan((y2-y1)/(x2-x1))
+    l = s/2
+    w = (s**2 -((x1-y1)**2+(y1-y2)**2))**.5/2
+    t = np.arctan2((y2-y1),(x2-x1))
 
-    return (cx, cy, a, b, tau)
+    return (cx, cy, l, w, t)
 
-def getPoints(tParam, t):
+def getPoints(tParam, theta):
     """
     Returns the Cartesian coordinates of the points on the ellipse expressed
     by a parametric representation touple that have the given parametric
@@ -274,10 +278,10 @@ def getPoints(tParam, t):
 
     Parameters
     ----------
-    tParam : (cx, cy, a, b, teta)
+    tParam : (cx, cy, l, w, t)
         Parametric represenation tuple of an ellipse.
 
-    t : numpy.array_like
+    theta : numpy.array_like
         Parametric angles of the points.
 
     Returns
@@ -288,11 +292,14 @@ def getPoints(tParam, t):
         Column 0 is has the X coordinates and column 1 has the Y coordinates.
 
     """
-    cx, cy, a, b, tau = tParam
-    t = np.reshape(t, (-1, 1))
-    x = cx + np.cos(tau)*a*np.cos(t) - np.sin(tau)*b*np.sin(t)
-    y = cy + np.sin(tau)*a*np.cos(t) + np.cos(tau)*b*np.sin(t)
-    return np.concatenate((x, y), axis=1)
+    cx, cy, l, w, t = tParam
+    cost = np.cos(t)
+    sint =np.sin(t)
+    costheta = np.cos(theta)
+    sintheta = np.sin(theta)
+    x = cx + cost * l * costheta - sint * w * sintheta
+    y = cy + sint * l * costheta + cost * w * sintheta
+    return np.vstack((x, y)).T
 
 
 
@@ -338,10 +345,10 @@ def fitEllipseDirect(points):
     # Find the eigenvector with the only pozitive eigenvalue
     geval = np.real(geval)
     i = np.argmax((geval>0) * np.isfinite(geval))
-    if not np.isfinite(geval[i]): 
+    if not np.isfinite(geval[i]):
         raise linalg.LinAlgError(
                 "Eigenvalue calculation failed to return a valid answer." +
-                "\nEigenvalues:\n" + str(geval) + '\n')    
+                "\nEigenvalues:\n" + str(geval) + '\n')
     theVec = np.real(gevec[:, i])
     # That vector has the parameters of the ellipse
     return tuple(theVec.flatten())
@@ -349,8 +356,8 @@ def fitEllipseDirect(points):
 
 def _projectPointEllipse_(a, b, y0, y1, tol):
     """
-    Private function. This is the heart of the distance finding algorithm from 
-    `distEllipsePoints()`. 
+    Private function. 
+	This is the heart of the distance finding algorithm from `distEllipsePoints()`.
     It is a translation of Listing 1 from Eberly (2013).
     """
     if y0>tol and y1>tol:
@@ -361,57 +368,54 @@ def _projectPointEllipse_(a, b, y0, y1, tol):
         x0 = a**2*y0/(tbar+a**2);
         x1 = b**2*y1/(tbar+b**2);
         d = np.sign(tbar) * np.sqrt((x0-y0)**2 + (x1-y1)**2)
-            
+
     elif y1 > tol:  #and y0==0
         x0 = 0
         x1 = b
         d = (y1-x1)
-        
-        
+
+
     elif y0 > (a**2-b**2)/a:  #and  y1==0
         x0 = a
-        x1 = 0            
+        x1 = 0
         d = (y0-x0)
-        
+
     else: #if y1==0 and y0<thresh
         x0 = a**2*y0/(a**2-b**2)
         x1 = b*np.sqrt(1- (x0/a)**2)
-        d = np.sqrt( (x0-y0)**2 + x1**2) 
-        
-    return d, (x0, x1)
-            
-    
-    
+        d = np.sqrt( (x0-y0)**2 + x1**2)
 
-    
-def distEllipsePoints(tParam, points, signed=False, getProjes  = False):
+    return d, (x0, x1)
+
+
+def distEllipsePoints(tParam, points, signed=False, getProjes  = False, tol=None):
     """
-    Finds the distances from an ellipse to a set of points using the method 
+    Finds the distances from an ellipse to a set of points using the method
     of Eberly (2013).
 
     Parameters
     ----------
-    tParam : (cx, cy, a, b, teta)
+    tParam : (cx, cy, l, w, t)
         Parametric represenation tuple of the ellipse.
 
     points : numpy.array_like
         A n*2 array with the coordinates of the points to which to compute the
         distance. Column 0 has the X coordinates and column 1 has the Y
         coordinates.
-    
+
     signed : boolean, optional
-        Default is ``False``. If ``True`` the sign of the distance will be 
+        Default is ``False``. If ``True`` the sign of the distance will be
         negative for the points that are inside the ellipse.
-        
+
     getProjes : boolean, optional
-        Default is ``False``. If ``True`` the function retuns  the tuple 
+        Default is ``False``. If ``True`` the function retuns  the tuple
         ``(dists, projes)``.
-        
+
     Returns
     -------
     dists : numpy.ndarray
         A 1d array with the distances from the ellipse to the points.
-    
+
     projes : numpy.ndarray
         Returns the closest points to the imput points that lie on the ellipse.
         The format is the same as for ``points``.
@@ -420,92 +424,100 @@ def distEllipsePoints(tParam, points, signed=False, getProjes  = False):
     ----------
 
     D. Eberly, 2013. Distance from a point to an ellipse, an ellipsoid, or a
-    hyperellipsoid. Geometric Tools, LLC. URL: 
+    hyperellipsoid. Geometric Tools, LLC. URL:
     http://www.geometrictools.com/Documentation/DistancePointEllipseEllipsoid.pdf
-    
+
     """
     # Handling arguments
-    cx, cy, a, b, tau = tParam
+    cx, cy, l, w, tau = tParam
     c = (cx, cy);
-    points=np.array(points, dtype='float')    
+    points=np.array(points, dtype='float')
 
-    if not (a > 0 and b > 0):
+    if not (l > 0 and w > 0):
         raise ValueError("Elements 2 and 3 of ``tParam`` must be pozitive.")
-    
+
     if not (points.ndim == 2 and points.shape[1] == 2):
         raise ValueError(
             "``points`` must be a 2d array and it must have 2 columns.")
-    
-    tol = np.finfo(float).eps**.5
-    # Center axes on ellipse    
+    if tol is None:
+        tol = np.finfo(float).eps**.5
+    # Center axes on ellipse
     points -= c
+
     # Handling circle case
-    isCircle = abs(a-b) < a*tol
+    isCircle = (abs(l-w) < l*tol)
     if isCircle:
-        projes = points*a/np.expand_dims(np.sum((points)**2, axis=1)**.5, 1)
-        dists = np.sum((points)**2, axis=1)**.5-a      
-    else: # Handling ellipse case    
-        #Make sure a > b
-        if a<b:
-            a, b = b, a
+        projes = points*l/np.sum((points)**2, axis=1, keepdims=True)**.5
+        dists = np.sum((points)**2, axis=1)**.5 - l
+
+    # Handling ellipse case
+    else:
+        #Make sure l > w
+        if l<w:
+            l, w = w, l
             tau += np.pi/2;
+
         #Move points to ellipse space
-        rotMat= np.array([[np.cos(-tau), -np.sin(-tau)], 
+        rotMat= np.array([[np.cos(-tau), -np.sin(-tau)],
                            [np.sin(-tau), np.cos(-tau)]])
         points = np.dot(points, rotMat.T)
+
         #Reflect to first quadrant
         if getProjes: sgnPoints =  np.sign(points)
         points = abs(points);
+
         #Find distance for every point
         dists = np.empty(points.shape[0])
         projes =  np.empty(points.shape)
         for index in range(dists.size):
             y0, y1 = points[index]
-            dists[index], projes[index] = _projectPointEllipse_(a, b, y0, y1, tol)
-        
+            dists[index], projes[index] = _projectPointEllipse_(l, w, y0, y1, tol)
+
     if not signed: dists = abs(dists)
-    
+
     if getProjes:
         # Inverse coordinate change for projes
-        if isCircle: projes += c
-        else: projes = np.dot(projes*sgnPoints, rotMat) + c
+        if isCircle:
+            projes += c
+        else:
+            projes = np.dot(projes*sgnPoints, rotMat) + c
         return dists, projes
-    else: 
+    else:
         return dists
- 
-                  
+
+
 def relationPointsEllipse(points, tFociStr):
     """
-    Returns an array with 
-    -1 for every point inside the ellipse, 
-    0 for every point on the ellipse and 
+    Returns an array with
+    -1 for every point inside the ellipse,
+    0 for every point on the ellipse and
     +1 for every point outside the ellipse.
-    
+
     Parameters
     ----------
     points : numpy.array_like
         A n*2 array with the coordinates of the points to which to compute the
         distance. Column 0 has the X coordinates and column 1 has the Y
         coordinates.
-    
+
     tFociStr : (x1, y1, x2, y2, s)
         The foci and string representation touple of the ellipse.
         It constists of:
-        ``x1, y1, x2, y2`` the cartesian coordinates of the 2 foci of the ellipse, 
+        ``x1, y1, x2, y2`` the cartesian coordinates of the 2 foci of the ellipse,
         ``s`` the length of the string used to draw the ellipse.
 
     Returns
     -------
     res : numpy.ndarray
-		A 1d array with -1, 0 or +1 for the points that are inside, 
+        A 1d array with -1, 0 or +1 for the points that are inside,
                 on or outside the ellipse respectively.
-    
+
     """
     x1, y1, x2, y2, s = tFociStr
     f1 = np.array([x1, y1])
     f2 = np.array([x2, y2])
     resid = ( np.sum((points-f1)**2, axis=1)**.5 +
-              np.sum((points-f2)**2, axis=1)**.5 - s )    
+              np.sum((points-f2)**2, axis=1)**.5 - s )
     return np.sign(resid)
 
 def _test_():
@@ -515,26 +527,29 @@ def _test_():
     # Makes points to be fitted to an ellipse
     tParam = (10., 20., 10., 7., np.pi/6);
     n = 60;
-    pts = getPoints(tParam, 
+    pts = getPoints(tParam,
                     np.linspace(0, 2*np.pi, n, endpoint=False))
-    pts = np.round(pts*10)/10
-    print("Number of data points", n)    
-    
+    print("Number of data points", n)
+
     # Tests fitting function
     tConicHat = fitEllipseDirect(pts)
     tParamHat = conic2Param(tConicHat)
     print("Ellipse estimation errors:", np.subtract(tParamHat, tParam))
-    
+    assert(np.allclose(tParam, tParamHat))
+
     # Calculates distances from points to ellipse
+    pts = np.round(pts)
     dists, projes = distEllipsePoints(tParam, pts, signed=True, getProjes=True)
-    
+
     # Checks if points with negative distances are inside the ellipse
-    rpe = relationPointsEllipse(pts, param2FociStr(tParam))  
-    print("Sign matches :", all(np.sign(dists) == rpe) )
+    rpe = relationPointsEllipse(pts, param2FociStr(tParam))
+    print("Sign matches :", np.all(np.sign(dists) == rpe) )
+    assert(np.all(np.sign(dists) == rpe))
+
     # Gets the points to draw the ellipses
     ellipse = getPoints(tParam, np.linspace(0, 2*np.pi, 60))
     ellipseH = getPoints(tParamHat, np.linspace(0, 2*np.pi, 60))
-    
+
     # Visualizes results
     plt.figure()
     plt.plot(pts[:, 0], pts[:, 1], '.g')
