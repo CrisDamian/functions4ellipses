@@ -15,7 +15,7 @@ Matplotlib to run the demo.
 
 Ussage
 =======
-Download the tilular file in the your source directory and import it.
+Download the titular file in the your source directory and import it.
 
 ---------------
 
